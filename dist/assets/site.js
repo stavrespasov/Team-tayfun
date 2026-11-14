@@ -29,49 +29,6 @@ if (lineup) {
   }
 }
 
-const scene = document.querySelector('[data-ring-cut]');
-const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
-const desktop = window.matchMedia('(min-width: 801px)');
-if (scene) {
-  let frame = 0;
-  const draw = () => {
-    frame = 0;
-    if (!motion.matches) {
-      scene.removeAttribute('data-motion');
-      scene.style.removeProperty('--cut-progress');
-      return;
-    }
-    const rect = scene.getBoundingClientRect();
-    const travel = window.innerHeight * (desktop.matches ? 0.55 : 0.42);
-    const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / travel));
-    scene.style.setProperty('--cut-progress', progress.toFixed(3));
-    scene.dataset.motion = '';
-  };
-  const queueDraw = () => {
-    if (!frame) frame = requestAnimationFrame(draw);
-  };
-  addEventListener('scroll', queueDraw, { passive: true });
-  addEventListener('resize', queueDraw);
-  motion.addEventListener('change', queueDraw);
-  queueDraw();
-}
-
-if (motion.matches && 'IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(entries => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      if (motion.matches && typeof entry.target.animate === 'function') {
-        entry.target.animate(
-          [{ transform: 'translateY(18px)', opacity: 0.65 }, { transform: 'none', opacity: 1 }],
-          { duration: 560, easing: 'cubic-bezier(.2,.75,.25,1)' },
-        );
-      }
-      observer.unobserve(entry.target);
-    }
-  }, { threshold: 0.18 });
-  for (const target of document.querySelectorAll('[data-reveal]')) observer.observe(target);
-}
-
 const schedule = document.querySelector('[data-schedule]');
 if (schedule) {
   const days = [...schedule.querySelectorAll('[data-day]')];
@@ -126,7 +83,7 @@ if (schedule) {
     });
   }
   sport.addEventListener('change', () => render(true));
-  level.addEventListener('change', () => render(true));
+  type.addEventListener('change', () => render(true));
   schedule.querySelector('[data-clear]').addEventListener('click', () => {
     activeDay = '0';
     sport.value = '';
@@ -195,4 +152,113 @@ if (trial) {
     result.focus();
   });
   fieldset.disabled = false;
+}
+
+// Keep optional motion under one control, including operating-system preferences.
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const motionToggle = document.querySelector('[data-motion-toggle]');
+let motionPaused = reducedMotion.matches;
+try {
+  motionPaused = reducedMotion.matches || sessionStorage.getItem('tayfun-motion') === 'paused';
+} catch (_) {
+  // The page also works when browser storage is unavailable.
+}
+const setMotion = paused => {
+  motionPaused = paused;
+  document.documentElement.dataset.motion = paused ? 'paused' : 'active';
+  if (motionToggle) {
+    motionToggle.setAttribute('aria-pressed', String(paused));
+    motionToggle.setAttribute('aria-label', paused ? 'Animationen abspielen' : 'Animationen pausieren');
+    motionToggle.querySelector('[data-motion-label]').textContent = paused ? 'Bewegung abspielen' : 'Bewegung pausieren';
+    motionToggle.firstElementChild.textContent = paused ? '▷' : 'Ⅱ';
+  }
+  for (const animation of document.getAnimations()) {
+    if (paused && animation.effect?.getTiming().iterations !== Infinity) animation.finish();
+    else if (paused) animation.pause();
+    else if (animation.playState === 'paused') animation.play();
+  }
+};
+setMotion(motionPaused);
+motionToggle?.addEventListener('click', () => {
+  setMotion(!motionPaused);
+  try {
+    sessionStorage.setItem('tayfun-motion', motionPaused ? 'paused' : 'active');
+  } catch (_) { /* Motion remains controllable without storage. */ }
+});
+reducedMotion.addEventListener('change', event => setMotion(event.matches));
+
+const heroScene = document.querySelector('.campaign-hero');
+const stormScene = document.querySelector('[data-storm]');
+let scrollFrame = 0;
+const drawScroll = () => {
+  scrollFrame = 0;
+  const pageTravel = document.documentElement.scrollHeight - innerHeight;
+  document.documentElement.style.setProperty('--read', pageTravel > 0 ? scrollY / pageTravel : 0);
+  if (motionPaused) return;
+  if (heroScene && scrollY < heroScene.offsetHeight) {
+    heroScene.style.setProperty('--hero-drift', `${Math.min(scrollY * .16, 110)}px`);
+  }
+  if (stormScene) {
+    const bounds = stormScene.getBoundingClientRect();
+    if (bounds.top < innerHeight && bounds.bottom > 0) {
+      stormScene.style.setProperty('--storm-shift', `${(innerHeight / 2 - bounds.top) * .1}px`);
+    }
+  }
+};
+const queueScroll = () => {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(drawScroll);
+};
+addEventListener('scroll', queueScroll, { passive: true });
+addEventListener('resize', queueScroll);
+queueScroll();
+
+if ('IntersectionObserver' in window) {
+  const revealObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      if (!motionPaused) {
+        const isHeading = /^H[1-6]$/.test(entry.target.tagName);
+        entry.target.animate([
+          { opacity: .2, transform: 'translateY(45px)', clipPath: isHeading ? 'inset(0 0 90% 0)' : 'inset(0)' },
+          { opacity: 1, transform: 'translateY(0)', clipPath: 'inset(0)' },
+        ], { duration: 1000, easing: 'cubic-bezier(.16,1,.3,1)' });
+      }
+      revealObserver.unobserve(entry.target);
+    }
+  }, { threshold: .12 });
+  document.querySelectorAll('[data-reveal]').forEach(element => revealObserver.observe(element));
+}
+
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+if (stormScene && finePointer.matches) {
+  stormScene.addEventListener('pointermove', event => {
+    if (motionPaused) return;
+    const rect = stormScene.getBoundingClientRect();
+    stormScene.style.setProperty('--tilt-x', `${(event.clientX / innerWidth - .5) * 20}deg`);
+    stormScene.style.setProperty('--tilt-y', `${((event.clientY - rect.top) / rect.height - .5) * -14}deg`);
+  }, { passive: true });
+  stormScene.addEventListener('pointerleave', () => {
+    stormScene.style.setProperty('--tilt-x', '0deg');
+    stormScene.style.setProperty('--tilt-y', '0deg');
+  });
+}
+
+const homeDays = [...document.querySelectorAll('[data-home-day]')];
+if (homeDays.length) {
+  const homeSlots = [...document.querySelectorAll('[data-home-slot]')];
+  const dayLabel = document.querySelector('[data-home-day-label]');
+  const homeStatus = document.querySelector('[data-home-status]');
+  for (const button of homeDays) {
+    button.addEventListener('click', () => {
+      const selectedDay = button.dataset.homeDay;
+      let visibleCount = 0;
+      for (const day of homeDays) day.setAttribute('aria-pressed', String(day === button));
+      for (const slot of homeSlots) {
+        slot.hidden = slot.dataset.homeSlot !== selectedDay;
+        if (!slot.hidden) visibleCount += 1;
+      }
+      dayLabel.textContent = button.getAttribute('aria-label');
+      homeStatus.textContent = `${visibleCount} ${visibleCount === 1 ? 'Einheit' : 'Einheiten'} am ${dayLabel.textContent}`;
+    });
+  }
 }

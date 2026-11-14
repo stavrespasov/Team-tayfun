@@ -44,7 +44,7 @@ COURSES.update({
         "details": "Das Team kann dir sagen, ob die Einheit zu deiner Erfahrung passt und welche Ausrüstung du mitbringen solltest.",
     },
     "personal-training": {
-        "name": "Personal Training", "image": "ring-practice", "alt": "Boxtraining am Ring",
+        "name": "Personal Training", "image": "campaign-wraps", "alt": "Detailaufnahme roter Boxbandagen, KI-Kampagnenmotiv",
         "line": "Training nach Absprache.", "intro": "Der Trainingsplan zeigt von Montag bis Samstag ein Zeitfenster für Personal Training.",
         "level": "Nach Absprache", "kit": "Ausrüstung bitte beim Gym erfragen",
         "details": "Das Zeitfenster ist keine Terminbestätigung. Frag direkt beim Gym nach Verfügbarkeit und Konditionen.",
@@ -123,8 +123,9 @@ def footer():
         </nav>
         {link("Instagram", INSTAGRAM, "text-link")}
       </div>
+      <div class="wrap footer-word" aria-hidden="true">TAYFUN<span>®</span></div>
       <div class="wrap footer-base">
-        <p>Frontend-Vorschau · Instagram-Motive und KI-Bildstudien</p>
+        <p>Designvorschau · Kampagnenbilder mit KI erstellt · Teamfotos von Instagram</p>
         <div><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></div>
       </div>
     </footer>'''
@@ -143,9 +144,11 @@ def page(path, title, description, main, body_class=""):
 <link rel="icon" href="/assets/team-crest.webp" type="image/webp">
 <link rel="preload" href="/assets/display.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/campaign.css">
 <script src="/assets/site.js" defer></script>
 </head>
 <body class="{body_class}">
+<div class="reading-progress" aria-hidden="true"></div>
 <a href="#inhalt" class="skip">Zum Inhalt springen</a>
 {header(path)}
 <main id="inhalt">{main}</main>
@@ -202,53 +205,59 @@ def lineup(include_heading=True):
 
 
 def home():
-    return f'''<section class="hero" aria-labelledby="hero-title">
-      <picture class="hero-media">
-        <source media="(max-width: 650px) and (orientation: portrait)" srcset="/assets/hero-mobile.webp">
-        {image("hero", "Boxer und Team nach einer Runde, Schwarzweißaufnahme", eager=True)}
-      </picture>
-      <div class="hero-shade"></div>
-      <div class="hero-mark">{MARK}</div>
+    cards = "".join(f'''<a class="discipline-card" href="/training/{slug}/" data-reveal>
+      {image(course["image"], course["alt"])}<div class="card-shade"></div>
+      <div class="card-top"><span>{course["line"]}</span><span class="card-go">{ARROW}</span></div>
+      <div class="card-bottom"><h3>{course["name"]}</h3><span>Training entdecken {ARROW}</span></div>
+    </a>''' for slug, course in list(COURSES.items())[:3])
+    days = "".join(f'<button type="button" data-home-day="{idx}" aria-pressed="{str(idx == 0).lower()}" aria-label="{day}">{SHORT_DAYS[idx]}</button>' for idx, day in enumerate(DAYS[:6]))
+    sessions = "".join(f'''<a class="home-session" href="/probetraining/?kurs={slot}#anfrage" data-home-slot="{day}"{' hidden' if day else ''}>
+      <span class="session-time">{start}<small>– {end}</small></span><span>{COURSES[slug]["name"]}<small>{kind}</small></span>{ARROW}
+    </a>''' for slot, day, start, end, slug, kind in SLOTS if slug != "personal-training")
+    return f'''<section class="hero campaign-hero" aria-labelledby="hero-title">
+      <div class="hero-media">{image("campaign-boxer", "Boxer mit roten Handschuhen im Gym, KI-Kampagnenmotiv", eager=True)}</div>
+      <div class="hero-shade"></div><div class="hero-gridlines" aria-hidden="true"></div>
       <div class="hero-content wrap">
-        <p class="eyebrow hero-kicker"><span></span>FIGHTSPORT GYM</p>
-        <h1 id="hero-title"><span><b>HIER BEGINNT</b></span><span><b>DEINE RUNDE.</b></span></h1>
-        <div class="hero-actions">{link("Probetraining", "/probetraining/", "button button--red")}
-          {link("Trainingsplan", "/trainingsplan/", "hero-link")}</div>
+        <p class="eyebrow hero-kicker"><span></span>TEAM TAYFUN · FIGHTSPORT GYM</p>
+        <h1 id="hero-title"><span><b>DEIN WILLE.</b></span><span><b>DEINE <em>RUNDE.</em></b></span></h1>
+        <div class="hero-under"><p>Alles beginnt mit dem ersten Schritt.<br>Mach ihn mit Team Tayfun.</p>
+        <div class="hero-actions">{link("Probetraining entdecken", "/probetraining/", "button button--red")}
+        {link("Trainingsplan", "/trainingsplan/", "hero-link")}</div></div>
       </div>
-      <div class="hero-bottom wrap"><span>TEAM TAYFUN <i></i> INSTAGRAM</span><a href="#training">Training entdecken {DOWN}</a></div>
-      <div class="hero-progress" aria-hidden="true"></div>
+      <div class="hero-bottom wrap"><a href="#spirit">Spür den Unterschied {DOWN}</a>
+        <button type="button" class="motion-toggle" data-motion-toggle aria-pressed="false" aria-label="Animationen pausieren"><span aria-hidden="true">Ⅱ</span><span data-motion-label>Bewegung pausieren</span></button></div>
+      <span class="hero-credit">KI-Kampagnenmotiv</span>
     </section>
-    <section class="ring-cut" aria-label="Trainingsmotiv" data-ring-cut>
-      <div class="wrap ring-grid">
-        <div class="ring-graphic">
-          <div class="ring-mark">{MARK}</div>
-          <div class="ring-lines" aria-hidden="true"><i></i><i></i><i></i></div><div class="ring-echo">{MARK}</div>
-        </div>
-        <figure class="ring-visual">
-          {image("ring-practice", "Athlet beim Boxtraining neben dem Ring", "ring-photo")}
-          <div class="ring-slices" aria-hidden="true"><i></i><i></i><i></i></div>
-          <figcaption>Am Ring · Instagram / @kosystembrand</figcaption>
-        </figure>
+    <div class="fight-ticker" aria-label="Disziplin. Respekt. Zusammenhalt."><div class="ticker-track" aria-hidden="true">
+      {''.join('<span>DISZIPLIN</span><i></i><span>RESPEKT</span><i></i><span>ZUSAMMENHALT</span><i></i>' for _ in range(4))}
+    </div></div>
+    <section class="spirit-section" id="spirit" aria-labelledby="spirit-title">
+      <div class="wrap spirit-layout"><div class="spirit-copy"><p class="eyebrow"><span></span>Die Haltung hinter dem Training</p>
+      <h2 id="spirit-title" data-reveal>ES BEGINNT<br>MIT <em>DIR.</em></h2>
+      <p>Der Moment, in dem du dich entscheidest. Für mehr Fokus. Für die nächste Runde. Für dich.</p>
+      {link("Dein Einstieg", "/probetraining/", "text-link")}</div>
+      <figure class="wraps-photo" data-reveal>{image("campaign-wraps", "Hände wickeln rote Boxbandagen, KI-Kampagnenmotiv")}<figcaption>Vor der ersten Runde · KI-Kampagnenmotiv</figcaption>
+        <span class="photo-corner" aria-hidden="true">{MARK}</span></figure>
       </div>
     </section>
-    {lineup()}
-    <section class="home-plan"><div class="closing-lines" aria-hidden="true"><i></i><i></i><i></i></div><div class="closing-mark">{MARK}</div><div class="wrap home-plan-inner">
-      <div><p class="eyebrow"><span></span>Trainingsplan</p><h2 data-reveal>Dein Training.<br>Dein Tag.</h2>
-        <p>Wähle einen Tag und filtere nach Disziplin oder Trainingsart.</p>
-        {link("Trainingsplan ansehen", "/trainingsplan/", "button button--paper")}
-      </div>
-      <div class="plan-tickets"><p class="eyebrow">Montag / Abendtraining</p>
-        <a href="/trainingsplan/?tag=0&amp;sport=kickboxen#kurse"><span class="ticket-time">18:00</span><span>Kickboxen K1<small>bis 19:00</small></span>{ARROW}</a>
-        <a href="/trainingsplan/?tag=0&amp;sport=boxen#kurse"><span class="ticket-time">19:15</span><span>Boxen<small>bis 20:15</small></span>{ARROW}</a>
-      </div>
+    <section class="discipline-section section" id="training"><div class="wrap">
+      <div class="section-head"><div><p class="eyebrow"><span></span>Finde deinen Sport</p><h2 data-reveal>VIELE WEGE.<br><em>DEINER.</em></h2></div><div class="discipline-intro"><p>Präzision im Stand. Kontrolle auf der Matte. Entdecke die Disziplin, die zu dir passt.</p>{link("Alle Trainingsangebote", "/training/", "text-link")}</div></div>
+      <div class="discipline-deck">{cards}</div><div class="deck-footer"><span>Trainingsmotive · KI-Bildstudien</span><span class="swipe-hint">Wischen & entdecken ↔</span></div>
+      <div class="extra-training"><span>Auch im Trainingsplan</span><a href="/training/kindertraining/">Kindertraining {ARROW}</a><a href="/training/sparring/">Sparring {ARROW}</a><a href="/training/personal-training/">Personal Training {ARROW}</a></div>
     </div></section>
-    <section class="paper section team-section"><div class="wrap team-grid">
-      <figure>{image("team", "Team Tayfun beim Sparring in der Trainingshalle")}<figcaption>Instagram / Team Tayfun</figcaption></figure>
-      <div><p class="eyebrow"><span></span>Team Tayfun</p><h2 data-reveal>Zusammen<br>auf der Matte.</h2>
-      <p>Ein Blick in die Trainingshalle und auf das Team hinter den Runden.</p>
-      {link("Team & Gym", "/team/", "text-link")}</div>
+    <section class="storm-section" data-storm aria-labelledby="storm-title">
+      <div class="storm-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="wrap storm-layout"><div class="storm-copy"><p class="eyebrow"><span></span>TEAM TAYFUN</p><h2 id="storm-title" data-reveal>ENTFESSELE<br>DEINEN<br><em>TAYFUN.</em></h2><p>Fokus im Kopf. Feuer im Herzen.<br>Dein Team in der Ecke.</p>{link("Lerne das Team kennen", "/team/", "text-link")}</div>
+      <div class="storm-object" aria-hidden="true"><div class="storm-orbit orbit-one"></div><div class="storm-orbit orbit-two"></div><div class="storm-orbit orbit-three"></div>
+      <div class="t-sculpture"><div class="t-depth depth-back">{MARK}</div><div class="t-depth depth-mid">{MARK}</div><div class="t-face">{MARK}</div><div class="t-wire">{MARK}</div></div>
+      <span class="storm-ground"></span></div></div>
+    </section>
+    <section class="training-week section"><div class="wrap week-layout"><div class="week-copy"><p class="eyebrow"><span></span>Deine Woche im Gym</p><h2 data-reveal>WENIGER<br>IRGENDWANN.<br><em>MEHR JETZT.</em></h2><p>Finde deine Einheit.<br>Der erste Schritt passt in deinen Kalender.</p>{link("Zum gesamten Trainingsplan", "/trainingsplan/", "text-link")}</div>
+      <div class="week-board"><div class="home-day-bar" aria-label="Trainingstag">{days}</div><div class="week-board-heading"><span data-home-day-label>Montag</span><span>Abendtraining & Wochenendkurse</span></div><div class="home-sessions">{sessions}</div><p class="week-note" role="status" data-home-status>3 Einheiten am Montag</p><p class="week-source">Plan laut Instagram vom 30. Juni. Zeiten bitte beim Gym bestätigen. Personal Training nach Absprache.</p></div>
     </div></section>
-    {closing()}'''
+    <section class="community-section"><div class="wrap community-layout"><div class="community-photo"><figure>{image("team-shirt", "Originales Team-Tayfun-Logo auf dem Teamshirt")}<figcaption>Team Tayfun · Instagram</figcaption></figure><span class="community-tag">DEIN TEAM.<br>DEIN RÜCKHALT.</span></div>
+      <div class="community-copy"><p class="eyebrow"><span></span>Zusammen stärker</p><h2 data-reveal>DU TRAINIERST.<br>WIR STEHEN<br><em>HINTER DIR.</em></h2><p>Team Tayfun lebt von den Menschen auf der Matte und in der Ringecke. Entdecke das Gym und die Momente zwischen den Runden.</p>{link("Team & Gym entdecken", "/team/", "text-link")}</div></div></section>
+    <section class="final-round" aria-labelledby="final-title"><div class="final-echo" aria-hidden="true">TAYFUN</div><div class="wrap"><p class="eyebrow"><span></span>Dein nächster Schritt</p><h2 id="final-title" data-reveal>BEREIT FÜR<br><em>DEINE RUNDE?</em></h2><a class="round-cta" href="/probetraining/"><span>Zum<br>Probetraining</span>{ARROW}</a></div></section>'''
 
 
 def training():
@@ -262,7 +271,7 @@ def course_page(slug, course):
        <p class="eyebrow"><span></span>Training / Team Tayfun</p>
        <h1>{course["name"]}.</h1><p class="intro-copy">{course["intro"]}</p>
        {link("Passende Zeiten ansehen", f"/trainingsplan/?sport={slug}#kurse", "button button--red")}</div>
-       <figure>{image(course["image"], course["alt"], eager=True)}<figcaption>{"Instagram" if slug in ("sparring", "kindertraining", "personal-training") else "KI-Bildstudie"}</figcaption></figure></div>
+       <figure>{image(course["image"], course["alt"], eager=True)}<figcaption>{"Instagram" if slug in ("sparring", "kindertraining") else "KI-Kampagnenmotiv"}</figcaption></figure></div>
     </section>
     <section class="paper section"><div class="wrap split">
       <div><p class="eyebrow"><span></span>Die Einheit</p><h2>{course["line"].replace(". ", ".<br>")}</h2></div>
@@ -314,7 +323,7 @@ def team():
     </div></section>
     <section class="paper team-archive" aria-label="Team Tayfun auf Instagram"><div class="wrap archive-grid">
       <figure>{image("team-shirt", "Team-Tayfun-Wappen auf einem Trainingsshirt")}<figcaption>Teamshirt / Instagram</figcaption></figure>
-      <figure>{image("ring-practice", "Training mit Boxhandschuhen am Ring")}<figcaption>Am Ring / Instagram · @kosystembrand</figcaption></figure>
+      <figure>{image("campaign-wraps", "Rote Boxbandagen vor dem Training, KI-Kampagnenmotiv")}<figcaption>KI-Kampagnenmotiv</figcaption></figure>
     </div></section>{closing()}'''
 
 

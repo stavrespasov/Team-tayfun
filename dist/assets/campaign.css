@@ -8,6 +8,7 @@
   --line: #d1d1ce;
   --red: #ed2339;
   --red-deep: #c4142a;
+  --tayfun-crimson: #df1b31;
   --light-muted: #f5c8cc;
 }
 ::selection { background: var(--red); color: white; }
@@ -67,17 +68,17 @@ em { font-style: normal; }
 .discipline-intro { max-width: 36ch; padding-bottom: 7px; justify-self: end; }
 .discipline-intro p { color: #a5a5ac; margin-bottom: 22px; }
 .discipline-deck { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.discipline-card { position: relative; height: clamp(370px, 40vw, 620px); overflow: hidden; text-decoration: none; isolation: isolate; background: #811028; color: #fff; }
-.discipline-card--white { background: #f8f6f3; color: #20151a; }
+.discipline-card { --card-inset: clamp(18px, 2.1vw, 29px); position: relative; height: clamp(370px, 40vw, 620px); overflow: hidden; text-decoration: none; isolation: isolate; background: var(--tayfun-crimson); color: #fff; }
+.discipline-card--white { background: #faf8f5; color: #24191d; }
 .discipline-emblem { position: relative; display: grid; place-items: center; width: 100%; height: 100%; overflow: hidden; isolation: isolate; background: var(--emblem-surface); }
-.discipline-emblem--red { --emblem-surface: radial-gradient(ellipse at 47% 39%, #ef2945 0%, #cd1332 52%, #840e28 100%); --emblem-line: #fff3f252; }
-.discipline-emblem--white { --emblem-surface: radial-gradient(ellipse at 55% 36%, #fff 15%, #f8f5f2 58%, #ebe3df 100%); --emblem-line: #a3142c42; }
+.discipline-emblem--red { --emblem-surface: radial-gradient(ellipse at 48% 42%, var(--tayfun-crimson) 0 38%, #be1530 72%, #991129 100%); --emblem-line: #fff3f237; --emblem-shadow: #500c234f; }
+.discipline-emblem--white { --emblem-surface: radial-gradient(ellipse at 52% 41%, #fff 0 30%, #faf8f5 66%, #efeae7 100%); --emblem-line: color-mix(in srgb, var(--tayfun-crimson) 26%, transparent); --emblem-shadow: #5b152023; }
 .discipline-emblem::before, .discipline-emblem::after { content: ""; position: absolute; pointer-events: none; }
-.discipline-emblem::before { inset: 0; background: repeating-linear-gradient(159deg, transparent 0 68px, var(--emblem-line) 69px, transparent 70px 143px); opacity: .55; }
-.discipline-emblem::after { width: 82%; height: 42%; top: 23%; border: 1px solid var(--emblem-line); border-radius: 50%; transform: rotate(-32deg); }
+.discipline-emblem::before { inset: 0; background: repeating-linear-gradient(159deg, transparent 0 82px, var(--emblem-line) 83px, transparent 84px 176px); opacity: .64; }
+.discipline-emblem::after { width: 79%; height: 37%; top: 27%; border: 1px solid var(--emblem-line); border-radius: 50%; transform: rotate(-32deg); }
 .discipline-emblem img { position: relative; z-index: 1; width: 82%; height: 85%; object-fit: contain; }
 .discipline-card > .discipline-emblem { position: absolute; inset: 0; z-index: -1; }
-.discipline-card > .discipline-emblem img { position: absolute; inset: 11% 3% auto; width: 94%; height: 55%; transition: transform .6s var(--ease); }
+.discipline-card > .discipline-emblem img { position: absolute; inset: 12% 5% auto; width: 90%; height: 56%; filter: drop-shadow(0 11px 12px var(--emblem-shadow)); transition: transform .6s var(--ease); }
 .discipline-card:hover .discipline-emblem img, .discipline-card:focus-visible .discipline-emblem img { transform: translateY(-6px) scale(1.045); }
 .course-hero figure > .discipline-emblem { position: absolute; inset: 0; }
 .course-hero figure .discipline-emblem img { position: relative; inset: auto; }
@@ -86,13 +87,13 @@ em { font-style: normal; }
 .course-art svg { width: 59%; max-width: 350px; fill: currentColor; }
 .course-hero-art { display: grid; min-height: clamp(290px, 37vw, 580px); }
 .course-art.lineup-thumb { display: none; }
-.card-top { position: absolute; top: 24px; left: 23px; right: 23px; display: flex; justify-content: space-between; align-items: start; gap: 10px; font-size: .72rem; }
-.card-top > span:first-child { max-width: 14ch; }
+.card-top { position: absolute; top: var(--card-inset); inset-inline: var(--card-inset); display: flex; justify-content: space-between; align-items: start; gap: 10px; font-size: .75rem; }
+.card-top > span:first-child { max-width: 21ch; }
 .card-go { display: grid; place-items: center; width: 39px; height: 39px; border: 1px solid currentColor; border-radius: 50%; transition: background .25s, border-color .25s, color .25s; }
 .discipline-card:is(:hover, :focus-visible) .card-go { background: #fff; border-color: #fff; color: #9f1424; }
-.discipline-card--white:is(:hover, :focus-visible) .card-go { background: #a3142c; border-color: #a3142c; color: #fff; }
-.card-bottom { position: absolute; left: 24px; right: 24px; bottom: 26px; }
-.card-bottom h3 { font: 700 clamp(39px, 4.2vw, 68px)/.95 var(--display); letter-spacing: -.015em; text-transform: uppercase; margin-bottom: 20px; }
+.discipline-card--white:is(:hover, :focus-visible) .card-go { background: var(--tayfun-crimson); border-color: var(--tayfun-crimson); color: #fff; }
+.card-bottom { position: absolute; inset-inline: var(--card-inset); bottom: var(--card-inset); }
+.card-bottom h3 { font: 700 clamp(37px, 4.05vw, 65px)/.95 var(--display); letter-spacing: -.018em; text-transform: uppercase; margin-bottom: 17px; }
 .card-bottom > span { display: flex; justify-content: space-between; align-items: center; font-size: .76rem; border-top: 1px solid #fff7; padding-top: 15px; }
 .discipline-card--white .card-bottom > span { border-color: #20151a4d; }
 .deck-footer { display: flex; justify-content: space-between; gap: 10px; font: 10px var(--mono); color: #a4a4aa; margin-top: 13px; }
@@ -101,7 +102,7 @@ em { font-style: normal; }
 .extra-training > span { color: #8d8d95; margin-right: auto; }
 .extra-training a { text-decoration: none; display: flex; gap: 20px; align-items: center; padding: 8px 0; }
 .extra-training a:hover { color: var(--red); }
-.storm-section { position: relative; background: #df1b31; color: #100a0c; overflow: hidden; isolation: isolate; }
+.storm-section { position: relative; background: var(--tayfun-crimson); color: #100a0c; overflow: hidden; isolation: isolate; }
 .storm-layout { display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 760px; padding-block: 110px; }
 .storm-copy { position: relative; z-index: 2; }
 .storm-copy h2 { font-size: clamp(70px, 8.5vw, 145px); margin-block: 30px; }
@@ -197,7 +198,7 @@ input, select { border-color: #b2b2b5; background: #fff; }
   .spirit-copy h2 { font-size: 8.5vw; }
   .bandage-feature { height: 420px; }
   .discipline-deck { gap: 12px; }
-  .card-top, .card-bottom { left: 15px; right: 15px; }
+  .discipline-card { --card-inset: 16px; }
   .card-bottom h3 { font-size: 37px; }
   .card-top > span:first-child { max-width: 10ch; font-size: 9px; }
   .card-go { width: 28px; height: 28px; }
@@ -243,9 +244,8 @@ input, select { border-color: #b2b2b5; background: #fff; }
   .discipline-intro { justify-self: start; max-width: 36ch; font-size: .92rem; }
   .discipline-intro p { margin-bottom: 13px; }
   .discipline-deck { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; margin-inline: calc(var(--gutter) * -1); padding: 0 var(--gutter) 15px; scrollbar-width: thin; scrollbar-color: var(--red) #242427; }
-  .discipline-card { flex: 0 0 85%; height: 460px; scroll-snap-align: center; }
-  .card-top, .card-bottom { left: 22px; right: 22px; }
-  .card-top > span:first-child { font-size: 11px; max-width: 17ch; }
+  .discipline-card { --card-inset: 21px; flex: 0 0 85%; height: 460px; scroll-snap-align: center; }
+  .card-top > span:first-child { font-size: 11px; max-width: 20ch; }
   .card-go { width: 36px; height: 36px; }
   .card-bottom h3 { font-size: clamp(36px, 12vw, 56px); }
   .deck-footer { display: flex; font-size: 8px; }

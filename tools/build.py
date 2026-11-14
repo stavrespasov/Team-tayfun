@@ -12,24 +12,24 @@ DAYS = ("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "S
 SHORT_DAYS = ("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
 COURSES = {
     "boxen": {
-        "name": "Boxen", "image": "boxen", "alt": "Boxerin mit Handschuhen beim Pratzentraining am Ring",
-        "credit": "KI-Bildstudie",
+        "name": "Boxen", "image": "boxen-emblem", "alt": "Kantiges Emblem aus zwei weißen Boxhandschuhen",
+        "emblem": "red",
         "line": "Timing. Distanz. Präzision.",
         "intro": "Vom ersten Schritt bis zur Kombination. Im Mittelpunkt stehen Beinarbeit, Deckung und kontrollierte Abläufe.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung, Wasser, Bandagen",
         "details": "Nach dem Aufwärmen folgen Bewegungsabläufe, Arbeit an den Pratzen und Übungen mit Partnern. Der Umfang lässt sich an das jeweilige Niveau anpassen.",
     },
     "kickboxen": {
-        "name": "Kickboxen K1", "image": "kickboxen", "alt": "Kickboxer beim Anlegen eines Schienbeinschoners",
-        "credit": "KI-Bildstudie",
+        "name": "Kickboxen K1", "image": "kickboxen-emblem", "alt": "Rotes Emblem eines Schienbein- und Fußschoners",
+        "emblem": "white",
         "line": "Rhythmus. Bewegung. Kontrolle.",
         "intro": "Schläge und Tritte kommen in flüssigen Kombinationen zusammen. Du lernst, das Gleichgewicht und die Distanz zu halten.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung, Wasser, Bandagen",
         "details": "Technikübungen und Pratzenarbeit bauen aufeinander auf. Im Einstieg steht die kontrollierte Ausführung im Vordergrund.",
     },
     "grappling": {
-        "name": "Ringen / Grappling", "image": "grappling", "alt": "Zwei Grappling-Trainierende im Gespräch auf der Matte",
-        "credit": "KI-Bildstudie",
+        "name": "Ringen / Grappling", "image": "grappling-emblem", "alt": "Zwei weiße geometrische Formen greifen ineinander",
+        "emblem": "red",
         "line": "Position. Balance. Bewegung.",
         "intro": "Auf der Matte lernst du, Positionen zu verstehen und dich kontrolliert mit einem Trainingspartner zu bewegen.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung ohne Reißverschlüsse, Wasser",
@@ -91,8 +91,11 @@ def image(name, alt, cls="", eager=False):
 
 
 def course_visual(course, cls="", *, decorative=False, eager=False):
+    alt = "" if decorative else course.get("alt", "")
+    if "emblem" in course:
+        return f'<span class="discipline-emblem discipline-emblem--{course["emblem"]} {cls}">{image(course["image"], alt, eager=eager)}</span>'
     if "image" in course:
-        return image(course["image"], "" if decorative else course["alt"], cls, eager)
+        return image(course["image"], alt, cls, eager)
     return f'<span class="course-art {cls}" aria-hidden="true">{MARK}</span>'
 
 
@@ -216,8 +219,8 @@ def lineup(include_heading=True):
 
 
 def home():
-    cards = "".join(f'''<a class="discipline-card" href="/training/{slug}/" data-reveal>
-      {course_visual(course, decorative=True)}<div class="card-shade"></div>
+    cards = "".join(f'''<a class="discipline-card discipline-card--{course["emblem"]}" href="/training/{slug}/" data-reveal>
+      {course_visual(course, decorative=True)}
       <div class="card-top"><span>{course["line"]}</span><span class="card-go">{ARROW}</span></div>
       <div class="card-bottom"><h3>{course["name"]}</h3><span>Training entdecken {ARROW}</span></div>
     </a>''' for slug, course in list(COURSES.items())[:3])
@@ -255,7 +258,7 @@ def home():
     </section>
     <section class="discipline-section section" id="training"><div class="wrap">
       <div class="section-head"><div><p class="eyebrow"><span></span>Finde deinen Sport</p><h2 data-reveal>VIELE WEGE.<br><em>DEINER.</em></h2></div><div class="discipline-intro"><p>Präzision im Stand. Kontrolle auf der Matte. Entdecke die Disziplin, die zu dir passt.</p>{link("Alle Trainingsangebote", "/training/", "text-link")}</div></div>
-      <div class="discipline-deck">{cards}</div><div class="deck-footer"><span>KI-Bildstudien</span><span class="swipe-hint">Wischen & entdecken ↔</span></div>
+      <div class="discipline-deck">{cards}</div><div class="deck-footer"><span>KI-Illustrationen</span><span class="swipe-hint">Wischen & entdecken ↔</span></div>
       <div class="extra-training"><span>Auch im Trainingsplan</span><a href="/training/kindertraining/">Kindertraining {ARROW}</a><a href="/training/sparring/">Sparring {ARROW}</a><a href="/training/personal-training/">Personal Training {ARROW}</a></div>
     </div></section>
     <section class="storm-section" data-storm aria-labelledby="storm-title">
@@ -279,7 +282,7 @@ def training():
 
 def course_page(slug, course):
     if "image" in course:
-        credit = course.get("credit", "Instagram / Team Tayfun")
+        credit = "KI-Illustration" if "emblem" in course else "Instagram / Team Tayfun"
         visual = f'<figure>{course_visual(course, eager=True)}<figcaption>{credit}</figcaption></figure>'
     else:
         visual = f'<div class="course-hero-art">{course_visual(course)}</div>'

@@ -6,26 +6,30 @@ ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 INSTAGRAM = "https://www.instagram.com/fightsport_gym_team_tayfun/"
 GYM_PHOTO_ALT = "Trainierende beim Sparring in der Halle von Team Tayfun"
-RING_PHOTO_ALT = "Athlet beim Boxtraining neben dem Ring"
+FIGHT_PHOTO_ALT = "Boxer und Team nach einem Kampf, Schwarzweißaufnahme"
+WRAPS_PHOTO_ALT = "Hände beim Anlegen roter Boxbandagen"
 DAYS = ("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
 SHORT_DAYS = ("Mo", "Di", "Mi", "Do", "Fr", "Sa", "So")
 COURSES = {
     "boxen": {
-        "name": "Boxen", "image": "ring-practice", "alt": RING_PHOTO_ALT,
+        "name": "Boxen", "image": "boxen", "alt": "Boxerin mit Handschuhen beim Pratzentraining am Ring",
+        "credit": "KI-Bildstudie",
         "line": "Timing. Distanz. Präzision.",
         "intro": "Vom ersten Schritt bis zur Kombination. Im Mittelpunkt stehen Beinarbeit, Deckung und kontrollierte Abläufe.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung, Wasser, Bandagen",
         "details": "Nach dem Aufwärmen folgen Bewegungsabläufe, Arbeit an den Pratzen und Übungen mit Partnern. Der Umfang lässt sich an das jeweilige Niveau anpassen.",
     },
     "kickboxen": {
-        "name": "Kickboxen K1", "image": "team", "alt": GYM_PHOTO_ALT,
+        "name": "Kickboxen K1", "image": "kickboxen", "alt": "Kickboxer beim Anlegen eines Schienbeinschoners",
+        "credit": "KI-Bildstudie",
         "line": "Rhythmus. Bewegung. Kontrolle.",
         "intro": "Schläge und Tritte kommen in flüssigen Kombinationen zusammen. Du lernst, das Gleichgewicht und die Distanz zu halten.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung, Wasser, Bandagen",
         "details": "Technikübungen und Pratzenarbeit bauen aufeinander auf. Im Einstieg steht die kontrollierte Ausführung im Vordergrund.",
     },
     "grappling": {
-        "name": "Ringen / Grappling",
+        "name": "Ringen / Grappling", "image": "grappling", "alt": "Zwei Grappling-Trainierende im Gespräch auf der Matte",
+        "credit": "KI-Bildstudie",
         "line": "Position. Balance. Bewegung.",
         "intro": "Auf der Matte lernst du, Positionen zu verstehen und dich kontrolliert mit einem Trainingspartner zu bewegen.",
         "level": "Beim Gym erfragen", "kit": "Sportkleidung ohne Reißverschlüsse, Wasser",
@@ -133,7 +137,7 @@ def footer():
       </div>
       <div class="wrap footer-word" aria-hidden="true">TAYFUN<span>®</span></div>
       <div class="wrap footer-base">
-        <p>Designvorschau · Fotos von Instagram</p>
+        <p>Designvorschau · Instagram-Fotos und KI-Bildstudien</p>
         <div><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a></div>
       </div>
     </footer>'''
@@ -224,7 +228,7 @@ def home():
     return f'''<section class="hero campaign-hero" aria-labelledby="hero-title">
       <picture class="hero-media">
         <source media="(max-width: 650px) and (orientation: portrait)" srcset="/assets/hero-mobile.webp">
-        {image("hero", "Boxer und Team nach einem Kampf, Schwarzweißaufnahme", eager=True)}
+        {image("hero", FIGHT_PHOTO_ALT, eager=True)}
       </picture>
       <div class="hero-shade"></div><div class="hero-gridlines" aria-hidden="true"></div>
       <div class="hero-mark" aria-hidden="true">{MARK}</div>
@@ -245,13 +249,13 @@ def home():
       <h2 id="spirit-title" data-reveal>ES BEGINNT<br>MIT <em>DIR.</em></h2>
       <p>Der Moment, in dem du dich entscheidest. Für mehr Fokus. Für die nächste Runde. Für dich.</p>
       {link("Dein Einstieg", "/probetraining/", "text-link")}</div>
-      <figure class="ring-feature" data-reveal>{image("ring-practice", RING_PHOTO_ALT)}<figcaption>Am Ring · Instagram / @kosystembrand</figcaption>
+      <figure class="bandage-feature" data-reveal>{image("campaign-wraps", WRAPS_PHOTO_ALT)}<figcaption>Vor der ersten Runde · KI-Bildstudie</figcaption>
         <span class="photo-corner" aria-hidden="true">{MARK}</span></figure>
       </div>
     </section>
     <section class="discipline-section section" id="training"><div class="wrap">
       <div class="section-head"><div><p class="eyebrow"><span></span>Finde deinen Sport</p><h2 data-reveal>VIELE WEGE.<br><em>DEINER.</em></h2></div><div class="discipline-intro"><p>Präzision im Stand. Kontrolle auf der Matte. Entdecke die Disziplin, die zu dir passt.</p>{link("Alle Trainingsangebote", "/training/", "text-link")}</div></div>
-      <div class="discipline-deck">{cards}</div><div class="deck-footer"><span class="swipe-hint">Wischen & entdecken ↔</span></div>
+      <div class="discipline-deck">{cards}</div><div class="deck-footer"><span>KI-Bildstudien</span><span class="swipe-hint">Wischen & entdecken ↔</span></div>
       <div class="extra-training"><span>Auch im Trainingsplan</span><a href="/training/kindertraining/">Kindertraining {ARROW}</a><a href="/training/sparring/">Sparring {ARROW}</a><a href="/training/personal-training/">Personal Training {ARROW}</a></div>
     </div></section>
     <section class="storm-section" data-storm aria-labelledby="storm-title">
@@ -275,7 +279,7 @@ def training():
 
 def course_page(slug, course):
     if "image" in course:
-        credit = "Instagram / @kosystembrand" if course["image"] == "ring-practice" else "Instagram / Team Tayfun"
+        credit = course.get("credit", "Instagram / Team Tayfun")
         visual = f'<figure>{course_visual(course, eager=True)}<figcaption>{credit}</figcaption></figure>'
     else:
         visual = f'<div class="course-hero-art">{course_visual(course)}</div>'
@@ -337,7 +341,7 @@ def team():
     </div></section>
     <section class="paper team-archive" aria-label="Team Tayfun auf Instagram"><div class="wrap archive-grid">
       <figure>{image("team-shirt", "Team-Tayfun-Wappen auf einem Trainingsshirt")}<figcaption>Teamshirt / Instagram</figcaption></figure>
-      <figure>{image("ring-practice", RING_PHOTO_ALT)}<figcaption>Am Ring / Instagram · @kosystembrand</figcaption></figure>
+      <figure>{image("hero", FIGHT_PHOTO_ALT)}<figcaption>Kampfabend / Instagram</figcaption></figure>
     </div></section>{closing()}'''
 
 

@@ -56,9 +56,9 @@ em { font-style: normal; }
 .spirit-layout { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 7%; }
 .spirit-copy h2 { font-size: clamp(65px, 7.8vw, 126px); margin: 30px 0; }
 .spirit-copy > p:not(.eyebrow) { color: var(--muted); max-width: 35ch; margin-bottom: 25px; }
-.ring-feature { position: relative; height: clamp(370px, 43vw, 650px); overflow: hidden; }
-.ring-feature > img { object-position: 58% 40%; }
-.ring-feature figcaption, .community-photo figcaption { position: absolute; bottom: 17px; left: 17px; padding: 6px 9px; background: #101012e8; color: #fff; font-size: .57rem; }
+.bandage-feature { position: relative; height: clamp(370px, 43vw, 650px); overflow: hidden; }
+.bandage-feature > img { object-position: 58% 50%; }
+.bandage-feature figcaption, .community-photo figcaption { position: absolute; bottom: 17px; left: 17px; padding: 6px 9px; background: #101012e8; color: #fff; font-size: .57rem; }
 .photo-corner { position: absolute; right: -12px; top: -16px; width: 130px; color: var(--red); transform: rotate(8deg); }
 .photo-corner svg { fill: currentColor; }
 .discipline-section { background: var(--dark); padding-top: 110px; }
@@ -72,7 +72,6 @@ em { font-style: normal; }
 .discipline-card:hover > img, .discipline-card:focus-visible > img { transform: scale(1.055); filter: saturate(1); }
 .course-art { display: grid; width: 100%; height: 100%; place-items: center; background: repeating-linear-gradient(158deg, transparent 0 44px, #ffffff1c 45px 46px), linear-gradient(145deg, #af172b, #3b0e19); color: #fff0ef; }
 .course-art svg { width: 59%; max-width: 350px; fill: currentColor; }
-.discipline-card > .course-art { position: absolute; inset: 0; }
 .course-hero-art { display: grid; min-height: clamp(290px, 37vw, 580px); }
 .course-art.lineup-thumb { display: none; }
 .card-shade { position: absolute; inset: 0; background: linear-gradient(0deg, #000e, transparent 70%), linear-gradient(180deg, #0008, transparent 35%); }
@@ -83,7 +82,7 @@ em { font-style: normal; }
 .card-bottom { position: absolute; left: 24px; right: 24px; bottom: 26px; }
 .card-bottom h3 { font: 700 clamp(39px, 4.2vw, 68px)/.95 var(--display); letter-spacing: -.015em; text-transform: uppercase; margin-bottom: 20px; }
 .card-bottom > span { display: flex; justify-content: space-between; align-items: center; font-size: .72rem; border-top: 1px solid #ffffff50; padding-top: 15px; }
-.deck-footer { display: none; justify-content: end; font: 10px var(--mono); color: #a4a4aa; margin-top: 13px; }
+.deck-footer { display: flex; justify-content: space-between; gap: 10px; font: 10px var(--mono); color: #a4a4aa; margin-top: 13px; }
 .swipe-hint { display: none; }
 .extra-training { display: flex; align-items: center; gap: 30px; flex-wrap: wrap; border-top: 1px solid #ffffff22; margin-top: 48px; padding-top: 25px; font-size: .8rem; }
 .extra-training > span { color: #8d8d95; margin-right: auto; }
@@ -183,7 +182,7 @@ input, select { border-color: #b2b2b5; background: #fff; }
   .campaign-hero .hero-content { padding-top: 100px; }
   .spirit-layout { gap: 5%; }
   .spirit-copy h2 { font-size: 8.5vw; }
-  .ring-feature { height: 420px; }
+  .bandage-feature { height: 420px; }
   .discipline-deck { gap: 12px; }
   .card-top, .card-bottom { left: 15px; right: 15px; }
   .card-bottom h3 { font-size: 37px; }
@@ -222,7 +221,7 @@ input, select { border-color: #b2b2b5; background: #fff; }
   .spirit-layout { grid-template-columns: 1fr; gap: 36px; }
   .spirit-copy h2 { font-size: 17vw; margin-block: 22px; }
   .spirit-copy > p:not(.eyebrow) { font-size: .92rem; }
-  .ring-feature { height: 390px; margin-inline: calc(var(--gutter) * -1); }
+  .bandage-feature { height: 390px; margin-inline: calc(var(--gutter) * -1); }
   .photo-corner { width: 110px; right: 5px; top: 2px; }
   .discipline-section { padding-block: 70px; overflow: hidden; }
   .discipline-section .section-head { grid-template-columns: 1fr; gap: 22px; margin-bottom: 33px; }
